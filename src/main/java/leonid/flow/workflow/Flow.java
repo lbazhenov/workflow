@@ -27,7 +27,8 @@ import java.util.Set;
  * for all activities and conditions or link just subset activities and conditions and for those, which are not linked, 
  * it's possible to set default <code>Flow.Operation</code>. 
  * </p>
- * <p><strong>Example</strong>
+ * 
+ * <strong>Example</strong>
  * <pre>
  * Flow&lt;Integer&gt;  flowBuilder = Flow.create("MyFlow");
  *
@@ -47,18 +48,18 @@ import java.util.Set;
  * flowBuilder.from(2).to(3).to(4).to(5).toEnd().build(); 
  * 
  * Map&lt;Integer,Operation&lt;Integer&gt;&gt; operations = new HashMap&lt;&gt;();
- * Operation<Integer>                       defaultOperation = new MyDefaultOperation();
+ * Operation&lt;Integer&gt;                    defaultOperation = new MyDefaultOperation();
  * 
  * &#47;&#47; Fill "operations" map here...
  * 
- * FlowInstance<Integer>           flow = flowBuilder.getFlowInstance(operations, defaultOperation);   
+ * FlowInstance&lt;Integer&gt;           flow = flowBuilder.getFlowInstance(operations, defaultOperation);   
  * 
  * &#47;&#47; Do your business with invoking move() to make a transition...
  * flow.move(); &#47;&#47; Operation instance from "operations" map or default one is called back 
  * 
  * &#47;&#47; .....
  * </pre>
- * </p>
+ * 
  * 
  * @author Leonid Bazhenov
  * @version 1.0
@@ -68,14 +69,14 @@ public class Flow<T>
   /**
    * This enumeration defines the flow building states.
    * <ul>
-   * <li><strong>CREATE</strong> &#8210; Creation of the flow is just started after invoking <code>create()</code> method.</li>
-   * <li><strong>FROM</strong> &#8210; <code>fromStart()</code> (only after <code>create()</code> method) or <code>from()</code> is invoked.</li>
-   * <li><strong>TO</strong> &#8210; <code>to()</code> method is invoked.</li>
-   * <li><strong>ONLY_IF</strong> &#8210; <code>onlyIf()</code> method is invoked.</li>
-   * <li><strong>ELSE_IF</strong> &#8210; <code>elseIf()</code> method is invoked.</li>
-   * <li><strong>OTHERWISE</strong> &#8210; <code>otherwise()</code> method is invoked.</li>
-   * <li><strong>OTHERWISE_END</strong> &#8210; <code>otherwise()</code> method without any parameter is invoked and <code>toEnd()</code> invocation is expected.</li>
-   * <li><strong>BUILT</strong> &#8210; <code>build()</code> method is invoked. Flow is ready to use. User may invoke <code>getFlowInstance()</code> method to get its instance with custom callback operations</li>
+   * <li><strong>CREATE</strong> &ndash; Creation of the flow is just started after invoking <code>create()</code> method.</li>
+   * <li><strong>FROM</strong> &ndash; <code>fromStart()</code> (only after <code>create()</code> method) or <code>from()</code> is invoked.</li>
+   * <li><strong>TO</strong> &ndash; <code>to()</code> method is invoked.</li>
+   * <li><strong>ONLY_IF</strong> &ndash; <code>onlyIf()</code> method is invoked.</li>
+   * <li><strong>ELSE_IF</strong> &ndash; <code>elseIf()</code> method is invoked.</li>
+   * <li><strong>OTHERWISE</strong> &ndash; <code>otherwise()</code> method is invoked.</li>
+   * <li><strong>OTHERWISE_END</strong> &ndash; <code>otherwise()</code> method without any parameter is invoked and <code>toEnd()</code> invocation is expected.</li>
+   * <li><strong>BUILT</strong> &ndash; <code>build()</code> method is invoked. Flow is ready to use. User may invoke <code>getFlowInstance()</code> method to get its instance with custom callback operations</li>
    * </ul> 
    */
   protected enum BuildState
@@ -129,65 +130,57 @@ public class Flow<T>
    * The followings describes the transitions between internal <code>Flow</code> builder states. 
    * <b>&#8744;</b> stands for logical OR. Subscripts depict API invocation, which make the transition.
    * 
-   * </p>
-   * <p style="background-color:#e0ebeb;margin-left:2em;padding:1em"> 
-   * <span style="margin:0em 0em 1em 0em;display:block;">
+   * </p> 
+   * 
    * Instance of <code>Flow</code> builder creation: <em>CREATE<sub>create(FlowName)</sub></em>
-   * </span>
-   * <em>CREATE<b>&nbsp;&#8594;&nbsp;</b>FROM<sub>fromStart()</sub></em><br/>
+   * 
+   * <p><em>CREATE<b>&nbsp;&#8594;&nbsp;</b>FROM<sub>fromStart()</sub></em></p>
+   * 
    * <em>FROM<b>&nbsp;&#8594;&nbsp;</b>TO<sub>to(Activity)</sub><b>&#8744;</b></em>
-   * <span style="margin:0em 0em 1em 4em;display:block;">
-   *                   <em>ONLY_IF<sub>onlyIf(Condition)</sub><b>&#8744;</b></em><br/>
-   *                   <em>END<sub>toEnd()</sub></em>
-   * </span>
+   * <p style="margin:0em 0em 1em 4em"><em>ONLY_IF<sub>onlyIf(Condition)</sub><b>&#8744;</b></em></p>
+   * <p style="margin:0em 0em 1em 4em"><em>END<sub>toEnd()</sub></em></p>
+   * 
    * <em>TO<b>&nbsp;&#8594;&nbsp;</b>BUILT<sub>build()</sub><b>&#8744;</b></em>
-   * <span style="margin:0em 0em 1em 3em;display:block;">
-   *                 <em>FROM<sub>from(Activity)</sub><b>&#8744;</b></em><br/>
-   *                 <em>TO<sub>to(Activity)</sub><b>&#8744;</b></em><br/>
-   *                 <em>ONLY_IF<sub>onlyIf(Condition)</sub><b>&#8744;</b></em><br/>
-   *                 <em>ELSE_IF<sub>elseIf(Condition)</sub><b>&#8744;</b></em><br/>
-   *                 <em>OTHERWISE_END<sub>otherwise()</sub><b>&#8744;</b></em><br/>
-   *                 <em>OTHERWISE<sub>otherwise(Activity)</sub><b>&#8744;</b></em><br/>
-   *                 <em>END<sub>toEnd()</sub></em>
-   * </span>
+   * <p style="margin:0em 0em 1em 4em"><em>FROM<sub>from(Activity)</sub><b>&#8744;</b></em></p>
+   * <p style="margin:0em 0em 1em 4em"><em>TO<sub>to(Activity)</sub><b>&#8744;</b></em></p>
+   * <p style="margin:0em 0em 1em 4em"><em>ONLY_IF<sub>onlyIf(Condition)</sub><b>&#8744;</b></em></p>
+   * <p style="margin:0em 0em 1em 4em"><em>ELSE_IF<sub>elseIf(Condition)</sub><b>&#8744;</b></em></p>
+   * <p style="margin:0em 0em 1em 4em"><em>OTHERWISE_END<sub>otherwise()</sub><b>&#8744;</b></em></p>
+   * <p style="margin:0em 0em 1em 4em"><em>OTHERWISE<sub>otherwise(Activity)</sub><b>&#8744;</b></em></p>
+   * <p style="margin:0em 0em 1em 4em"><em>END<sub>toEnd()</sub></em></p>
+   * 
    * <em>ONLY_IF<b>&nbsp;&#8594;&nbsp;</b>TO<sub>to(Activity)</sub><b>&#8744;</b></em>
-   * <span style="margin:0em 0em 1em 5em;display:block;">
-   *                 <em>ONLY_IF<sub>onlyIf(Condition)</sub><b>&#8744;</b></em><br/>
-   *                 <em>END<sub>toEnd()</sub></em>
-   * </span>
+   * <p style="margin:0em 0em 1em 4em"><em>ONLY_IF<sub>onlyIf(Condition)</sub><b>&#8744;</b></em></p>
+   * <p style="margin:0em 0em 1em 4em"><em>END<sub>toEnd()</sub></em></p>
+   * 
    * <em>ELSE_IF<b>&nbsp;&#8594;&nbsp;</b>TO<sub>to(Activity)</sub><b>&#8744;</b></em>
-   * <span style="margin:0em 0em 1em 5em;display:block;">
-   *                 <em>ONLY_IF<sub>onlyIf(Condition)</sub><b>&#8744;</b></em><br/>
-   *                 <em>END<sub>toEnd()</sub></em>
-   * </span>
+   * <p style="margin:0em 0em 1em 4em"><em>ONLY_IF<sub>onlyIf(Condition)</sub><b>&#8744;</b></em></p>
+   * <p style="margin:0em 0em 1em 4em"><em>END<sub>toEnd()</sub></em></p>
+   * 
    * <em>OTHERWISE<b>&nbsp;&#8594;&nbsp;</b>BUILT<sub>build()</sub><b>&#8744;</b></em>
-   * <span style="margin:0em 0em 1em 7em;display:block;">
-   *                 <em>FROM<sub>from(Activity)</sub><b>&#8744;</b></em><br/>
-   *                 <em>TO<sub>to(Activity)</sub><b>&#8744;</b></em><br/>
-   *                 <em>ONLY_IF<sub>onlyIf(Condition)</sub><b>&#8744;</b></em><br/>
-   *                 <em>ELSE_IF<sub>elseIf(Condition)</sub><b>&#8744;</b></em><br/>
-   *                 <em>OTHERWISE_END<sub>otherwise()</sub><b>&#8744;</b></em><br/>
-   *                 <em>OTHERWISE<sub>otherwise(Activity)</sub><b>&#8744;</b></em><br/>
-   *                 <em>END<sub>toEnd()</sub></em>
-   * </span>
-   * <em>OTHERWISE_END<b>&nbsp;&#8594;&nbsp;</b>BUILT<sub>build()</sub><b>&#8744;</b></em>
-   * <span style="margin:0em 0em 1em 9em;display:block;">
-   *                 <em>END<sub>toEnd()</sub></em>
-   * </span>
+   * <p style="margin:0em 0em 1em 4em"><em>FROM<sub>from(Activity)</sub><b>&#8744;</b></em></p>
+   * <p style="margin:0em 0em 1em 4em"><em>TO<sub>to(Activity)</sub><b>&#8744;</b></em></p>
+   * <p style="margin:0em 0em 1em 4em"><em>ONLY_IF<sub>onlyIf(Condition)</sub><b>&#8744;</b></em></p>
+   * <p style="margin:0em 0em 1em 4em"><em>ELSE_IF<sub>elseIf(Condition)</sub><b>&#8744;</b></em></p>
+   * <p style="margin:0em 0em 1em 4em"><em>OTHERWISE_END<sub>otherwise()</sub><b>&#8744;</b></em></p>
+   * <p style="margin:0em 0em 1em 4em"><em>OTHERWISE<sub>otherwise(Activity)</sub><b>&#8744;</b></em></p>
+   * <p style="margin:0em 0em 1em 4em"><em>END<sub>toEnd()</sub></em></p>
+   * 
+   * <p><em>OTHERWISE_END<b>&nbsp;&#8594;&nbsp;</b>BUILT<sub>build()</sub><b>&#8744;</b></em><em>END<sub>toEnd()</sub></em>
+   * </p>
    * <em>END<b>&nbsp;&#8594;&nbsp;</b>BUILT<sub>build()</sub><b>&#8744;</b></em>
-   * <span style="margin:0em 0em 1em 4em;display:block;">
-   *                 <em>ELSE_IF<sub>elseIf(Condition)</sub><b>&#8744;</b></em><br/>
-   *                 <em>OTHERWISE_END<sub>otherwise()</sub><b>&#8744;</b></em><br/>
-   *                 <em>OTHERWISE<sub>otherwise(Activity)</sub></em>
-   * </span>
+   * <p style="margin:0em 0em 1em 4em"><em>ELSE_IF<sub>elseIf(Condition)</sub><b>&#8744;</b></em></p>
+   * <p style="margin:0em 0em 1em 4em"><em>OTHERWISE_END<sub>otherwise()</sub><b>&#8744;</b></em></p>
+   * <p style="margin:0em 0em 1em 4em"><em>OTHERWISE<sub>otherwise(Activity)</sub></em></p>
+   * 
    * <em>BUILT: This state is final. To get the <code>FlowInstance</code> object to run the flow the <code>getFlowInstance</code>
    * method must be called of the <code>Flow</code> builder object</em>
-   * </p>
+   * 
    * 
    * <p>
    * Multiple <code>FlowInstance</code> objects can be created for the same flow chart built by <code>Flow</code> builder. 
    * Each of them will run its own instance of the flow chart.</p>
-   * @param <C>
+   * @param <C> data type of the flow node id.
    * 
    * @param flowName is the name of the flow.
    * @return <code>Flow</code> instance to continue the flow building.
@@ -269,9 +262,9 @@ public class Flow<T>
   
   /**
    * Returns the flow instance supplied with operation map. Every map entry is an activity or condition ID to 
-   * <code>Flow.Operation</code> implementation pair.<br/>
+   * <code>Flow.Operation</code> implementation pair.
    * If some of the activity is not linked to <code>Flow.Operation</code> implementation in the map
-   * then no notification is thrown when this activity is reached. <br/>
+   * then no notification is thrown when this activity is reached.
    * If some of the condition is not linked to <code>Flow.Operation</code> implementation in the map 
    * then the such condition is evaluated to <code>false</code>. 
    * 
@@ -291,9 +284,9 @@ public class Flow<T>
   
   /**
    * Returns the flow instance supplied with operation map and default operation. Every map entry is an activity or condition ID to 
-   * <code>Flow.Operation</code> implementation pair.<br/>
+   * <code>Flow.Operation</code> implementation pair.
    * If some of the activity is not linked to <code>Flow.Operation</code> implementation in the map
-   * then notification goes to default operation. <br/>
+   * then notification goes to default operation.
    * If some of the condition is not linked to <code>Flow.Operation</code> implementation in the map 
    * then the such condition is evaluated by invoking <code>test</code> method of default operation. 
    *  
