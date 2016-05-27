@@ -5,11 +5,11 @@ Java Doc can be viewed here: http://lbazhenov.github.io/workflow/apidocs/
 ## Example
 <pre>
  // Create a flow builder, where every node name is represented by String value
- Flow<String>  flowBuilder = Flow.create("MyFlow");
+ Flow&lt;String&gt;  flow = Flow.create("MyFlow");
  
  // Code the flow
- flowBuilder.fromStart().to("FirstState");
- flowBuilder.from("FirstState").
+ flow.fromStart().to("FirstState");
+ flow.from("FirstState").
    onlyIf("Condition-1").
      onlyIf("Condition-2).
        to("SecondState").
@@ -22,7 +22,7 @@ Java Doc can be viewed here: http://lbazhenov.github.io/workflow/apidocs/
      to("FifthState").
    otherwise().toEnd();
    
-  flowBuilder.build(); // Now the flow of nodes is coded. 
+  flow.build(); // Now the flow of nodes is coded. 
   
   // The next we need:
   // [1] to create the map of NodeName->Operation to bring the actual execution for each node.
@@ -36,15 +36,15 @@ Java Doc can be viewed here: http://lbazhenov.github.io/workflow/apidocs/
  
   // Fill "operations" map here...
   // Something like...
-  // operation.put("FirstState", new YourFirstStateImpl());
+  // operations.put("FirstState", new YourFirstStateImpl());
   // Note: you may reuse the same state implementation but in this case it will require 
   // conditional logic based on node name.
   
   // Request the instance of the flow
-  FlowInstance&lt;String&gt;           flow = flowBuilder.getFlowInstance(operations, defaultOperation);   
+  FlowInstance&lt;String&gt;           flowInstance = flow.getFlowInstance(operations, defaultOperation);   
  
  // Do your business with invoking move() to make a transition...
- flow.move(); // Operation instance from "operations" map or default one is called back 
+ flowInstance.move(); // Operation from "operations" map or default one is used to make a call back 
  
  // .....
 </pre>
